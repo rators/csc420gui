@@ -1,33 +1,41 @@
 package raflack
 
+import com.mongodb.casbah.Imports._
 import raflack.MyJsonProtocol._
 import spray.json._
 
 import scala.collection.mutable.ArrayBuffer
-import com.mongodb.casbah.Imports._
 
-object RaflackDB extends App {
+class RaflackDB {
   val mongoClient = MongoClient("localhost", 27017)
-
   val db = mongoClient("raflack")
-  println(s"The collections in the test database at initialization are: ${db.collectionNames}")
-
   val coll = db("raflack") // get a collection from the test database
 
-  val comments = ArrayBuffer(
-    Comment("paul", "trump sucks")
-  )
+  def getRoot: List[Group] = {
+    coll.find.map(_.toString.parseJson.convertTo[Group]).toList
+  }
 
-  val threads = ArrayBuffer(
-    Thread("Election 2016", comments)
-  )
+  def addGroup(name: String) = {
+    val newGroup = Group(name.hashCode, name, ArrayBuffer.empty)
+    coll.insert(newGroup.toMongo)
+  }
 
-  val startingData = Group("General".hashCode, "General", threads)
-  coll.insert(startingData.jsonString)
+  println(getRoot)
 
-  val allDocs = coll.find()
-
-  for(doc <- allDocs) println( doc )
+//  val comments = ArrayBuffer(
+//    Comment("paul", "trump sucks")
+//  )
+//
+//  val threads = ArrayBuffer(
+//    Thread("Election 2016", comments)
+//  )
+//
+//  val startingData = Group("General".hashCode, "General", threads)
+//  coll.insert(startingData.toMongo)
+//
+//  val allDocs = coll.find()
+//
+//  for(doc <- allDocs) println( doc )
 
 //
 //  val result = coll.findOne(MongoDBObject("_id" -> 3))
@@ -36,4 +44,8 @@ object RaflackDB extends App {
 //  for(doc <- allDocs) println( doc )
 //
 //  mongoClient.close()
+}
+
+object RaflackDB {
+  def apply() = new RaflackDB()
 }
