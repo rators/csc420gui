@@ -9,6 +9,7 @@ import hw2.SwingImpl._
 case class Circle(tracker: Tracker) extends JPanel {
   setBackground(Color.LIGHT_GRAY)
   val circleThis = this
+
   val listener = new ChangeListener {
     override def stateChanged(e: ChangeEvent): Unit = {
       circleThis.repaint()
@@ -56,9 +57,9 @@ case class Circle(tracker: Tracker) extends JPanel {
   }
 
   def drawCrossHair(g: Graphics): Unit = {
-    g.setColor(Color.BLACK)
-
-    val correctedY = ((HW2.SLIDER_LEFT_MAX - tracker.leftSlider.getValue.toDouble) / HW2.SLIDER_LEFT_MAX) * HW2.CANVAS_HEIGHT
-    g.fillOval(tracker.sliderTop.getValue, correctedY.toInt, 4, 4)
+//    g.setColor(Color.BLACK)
+//
+//    val correctedY = ((HW2.SLIDER_LEFT_MAX - tracker.leftSlider.getValue.toDouble) / HW2.SLIDER_LEFT_MAX) * HW2.CANVAS_HEIGHT
+//    g.fillOval(tracker.sliderTop.getValue, correctedY.toInt, 4, 4)
   }
 }
