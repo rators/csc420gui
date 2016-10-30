@@ -1,7 +1,12 @@
 package raflack.views.cards
 
+import javax.swing.JLabel
+
+import net.miginfocom.swing.MigLayout
+import hw2.SwingImpl._
+
 /**
-  * Created by rtorres on 10/22/16.
+  * Card component for
   */
 class LandingCard {
 

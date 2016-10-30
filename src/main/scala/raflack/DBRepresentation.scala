@@ -11,6 +11,6 @@ case class Comment(name: String, text: String)
 
 case class Thread(name: String, comments: ArrayBuffer[Comment])
 
-case class Group(_id: Int, title: String, threads: ArrayBuffer[Thread]){
+case class Group(_id: Int, title: String, description: String, threads: ArrayBuffer[Thread]){
   def toMongo = MongoDBObject(this.toJson.toString)
 }

@@ -20,6 +20,8 @@ libraryDependencies ++= {
     "io.spray"            %%  "spray-json"    % "1.3.2",
     "com.typesafe.akka"   %%  "akka-actor"    % akkaV,
     "com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
+    "io.spray"            %%  "spray-httpx"   % sprayV,
+    "io.spray"            %%  "spray-util"   % sprayV,
     "org.mongodb" %% "casbah" % "3.1.1",
     "org.slf4j" % "slf4j-simple" % "1.6.4"
   )

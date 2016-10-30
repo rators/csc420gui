@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 public class RoundedPane extends JPanel {
 
-    private int shadowSize = 5;
+    private int shadowSize = 2;
 
     public RoundedPane() {
         // This is very important, as part of the panel is going to be transparent

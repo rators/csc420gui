@@ -15,12 +15,16 @@ class RaflackDB {
     coll.find.map(_.toString.parseJson.convertTo[Group]).toList
   }
 
-  def addGroup(name: String) = {
-    val newGroup = Group(name.hashCode, name, ArrayBuffer.empty)
+  def addGroup(name: String, description: String) = {
+    val newGroup = Group(name.hashCode, name, description, ArrayBuffer.empty)
     coll.insert(newGroup.toMongo)
+    newGroup
   }
 
-  println(getRoot)
+  def addGroup(group: Group) = {
+    coll.insert(group.toMongo)
+    group
+  }
 
 //  val comments = ArrayBuffer(
 //    Comment("paul", "trump sucks")

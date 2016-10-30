@@ -1,22 +1,21 @@
 package raflack
 
-import java.awt.Dimension
+import java.awt.{CardLayout, Dimension}
+import java.awt.event.{MouseEvent, MouseListener}
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing._
 
 import hw2.SwingImpl._
 import net.miginfocom.swing.MigLayout
-import raflack.views.cards.RoundedPane
+import raflack.forms.{GroupForm, ThreadForm}
+import raflack.sections.{GroupPanel, ThreadPanel, UserMenu}
+import raflack.views.cards.GroupCard
 
-case class DescriptionCard(title: String, description: String, count: Int) extends RoundedPane(new MigLayout()) {
-  val titleLabel = new JLabel(s"<html><h3><b>$title</b></h3></html>")
-  val descriptionLabel = new JLabel(s"<html><h4>$description</h4><html>")
-  val posts = new JLabel(s"<html><h5>Threads: $count</h5></html>")
-  this += titleLabel -> "cell 0 0"
-  this += descriptionLabel -> "cell 0 1"
-  this += posts -> "cell 0 2"
-}
+import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.Future
+import scala.util.Success
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object RaflackView extends App {
   val db = new RaflackDB()
@@ -32,31 +31,81 @@ object RaflackView extends App {
     frame.setPreferredSize(new Dimension(500, 500))
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
 
-//    val cBoxSelections = data.map(_.title).toArray
-//    val countryCBox = new JComboBox[String](cBoxSelections)
-//
-//    countryCBox.setSelectedIndex(-1)
-//    countryCBox.setSize(300, 50)
-//    frame += countryCBox
-//
-//    val picLabel = new JLabel(cBoxSelections.head)
-//    picLabel.setSize(50, 50)
-//    frame += picLabel
+    val userMenu = new UserMenu()
 
-    val mainPanel = new JPanel(new MigLayout())
+    val mainPanel = new JPanel(new MigLayout("", "20[]"))
+    val pane = new JScrollPane(userMenu)
 
-    val descCard = DescriptionCard(
-      "Politics",
-      "Discuss all things politics.",
-      50
-    )
 
-    mainPanel += descCard -> "cell 0 0"
+    val contextPanel = new JPanel(new CardLayout())
+    val dbRoot = db.getRoot
+    val root = dbRoot.head
+    root.threads += Thread("Who is going to win this election?", ArrayBuffer.empty)
+    val threadForm = new ThreadForm()
+    val threadCardPanel = new ThreadPanel(root, root.threads.toList, threadForm)
+    threadCardPanel += threadForm -> "dock east"
 
-//    countryCBox.addListener((e) =>
-//      picLabel.setText(countryCBox.getSelectedItem.toString)
-//    )
+    val groupCardPanel = new GroupPanel(dbRoot, (title) => {
+      println(title)
+      println(dbRoot.find(_.title.equals(title)))
+      threadCardPanel.show(dbRoot.find(_.title.equals(title)).get)
+      val item: String = "thread"
+      val cl = contextPanel.getLayout.asInstanceOf[CardLayout]
+      println(item)
+      cl.show(contextPanel, item)
+      frame.revalidate()
+      contextPanel.validate()
+      frame.repaint()
+      contextPanel.repaint()
+      contextPanel.revalidate()
+    })
+
+    contextPanel.add("group", groupCardPanel)
+    contextPanel.add("thread", threadCardPanel)
+
+    val groupFormPanel = new GroupForm()
+    groupFormPanel.onSubmit((title, description) => {
+      println(s"The title is $title, the description is $description")
+      val g = Future {
+        db.addGroup(title, description)
+      }
+      g.onComplete {
+        case Success(group) =>
+          SwingUtilities.invokeLater(new Runnable {
+            override def run(): Unit = {}
+
+            groupCardPanel += GroupCard(group.title, group.description, group.threads.length)
+            frame.revalidate()
+          })
+        case _ => ???
+      }
+    })
+
+    val mainPanelTitle = new JLabel("<html><h1>Raflack!</h1></html>")
+
+    val backButton = new JButton("Back")
+
+    backButton.onClick((e) => {
+      val item: String = "group"
+      val cl = contextPanel.getLayout.asInstanceOf[CardLayout]
+      println(item)
+      cl.show(contextPanel, item)
+      frame.revalidate()
+      contextPanel.validate()
+      frame.repaint()
+      contextPanel.repaint()
+      contextPanel.revalidate()
+    })
+
+    mainPanel += backButton -> "dock south"
+    mainPanel += contextPanel
+    mainPanel += mainPanelTitle -> "dock north"
+    mainPanel += pane -> "dock west"
+    groupCardPanel += groupFormPanel -> "dock east"
+    mainPanel.setPreferredSize(1920, 1080)
+
     frame += mainPanel
+    frame.setPreferredSize(1920, 1080)
     frame.pack()
     frame.setVisible(true)
   }
