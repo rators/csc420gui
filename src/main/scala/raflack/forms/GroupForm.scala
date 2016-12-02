@@ -3,7 +3,7 @@ package raflack.forms
 import javax.swing.{JButton, JLabel, JPanel, JTextField}
 
 import net.miginfocom.swing.MigLayout
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 
 class GroupForm extends JPanel(new MigLayout()) {
   type SubmitAction = (String, String) => Unit

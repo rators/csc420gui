@@ -4,7 +4,7 @@ import java.awt.event.{MouseEvent, MouseListener}
 import javax.swing.JPanel
 
 import net.miginfocom.swing.MigLayout
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 import raflack.Group
 import raflack.views.cards.GroupCard
 

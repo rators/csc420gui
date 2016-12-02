@@ -1,7 +1,7 @@
 package raflack.views.cards
 
 import javax.swing.JLabel
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 import net.miginfocom.swing.MigLayout
 
 /**

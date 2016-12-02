@@ -1,19 +1,31 @@
-package hw2
+package flagapp.conversions
 
-import java.awt.event.{ActionEvent, ActionListener}
+import java.awt.event.{ActionEvent, ActionListener, KeyAdapter, KeyEvent}
 import java.awt.{Component, Dimension}
 import javax.swing._
 import javax.swing.event.{ChangeEvent, ChangeListener}
 
 object SwingImpl {
   implicit def pairToDimension(p: (Int, Int)): Dimension = new Dimension(p._1, p._2)
+
   implicit class ScalaFrame(f: JFrame) {
     def +=(c: Component) = f.getContentPane.add(c)
+
     def +=(c: (Component, String)) = f.getContentPane.add(c._1, c._2)
   }
 
+  implicit class ScalaTextField(f: JTextField) {
+    def addChangeListener(handler: KeyEvent => Unit) = f.addKeyListener(new KeyAdapter() {
+      override def keyPressed(ke: KeyEvent): Unit = {
+        handler(ke)
+      }
+    })
+  }
+
+
   implicit class ScalaPanel(p: JPanel) {
     def +=(c: Component) = p.add(c)
+
     def +=(c: (Component, String)) = p.add(c._1, c._2)
   }
 
@@ -40,4 +52,5 @@ object SwingImpl {
       })
     }
   }
+
 }

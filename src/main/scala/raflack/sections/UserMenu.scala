@@ -4,7 +4,7 @@ import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.{ImageIcon, JLabel, JPanel}
 
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 import net.miginfocom.swing.MigLayout
 
 /**

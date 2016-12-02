@@ -6,7 +6,7 @@ package raflack.forms
 import javax.swing.{JButton, JLabel, JPanel, JTextField}
 
 import net.miginfocom.swing.MigLayout
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 import raflack.views.cards.ThreadCard
 import raflack.{Group, Thread}
 

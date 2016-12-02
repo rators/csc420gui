@@ -3,7 +3,7 @@ package raflack.sections
 import java.awt.event.{MouseEvent, MouseListener}
 import javax.swing.JPanel
 
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 import net.miginfocom.swing.MigLayout
 import raflack.forms.ThreadForm
 import raflack.views.cards.{GroupCard, ThreadCard}

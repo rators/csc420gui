@@ -6,7 +6,7 @@ import java.io.File
 import javax.imageio.ImageIO
 import javax.swing._
 
-import hw2.SwingImpl._
+import flagapp.conversions.SwingImpl._
 import net.miginfocom.swing.MigLayout
 import raflack.forms.{GroupForm, ThreadForm}
 import raflack.sections.{GroupPanel, ThreadPanel, UserMenu}
