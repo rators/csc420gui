@@ -5,18 +5,16 @@ package raflack.forms
   */
 import javax.swing.{JButton, JLabel, JPanel, JTextField}
 
-import net.miginfocom.swing.MigLayout
 import flagapp.conversions.SwingImpl._
-import raflack.views.cards.ThreadCard
-import raflack.{Group, Thread}
+import net.miginfocom.swing.MigLayout
+import raflack.RThread
+import raflack.model.ThreadsModel
 
 import scala.collection.mutable.ArrayBuffer
 
-class ThreadForm extends JPanel(new MigLayout()) {
+class ThreadLandingForm(threadModel: ThreadsModel) extends JPanel(new MigLayout()) {
   type SubmitAction = (String, String) => Unit
   // the form for making new groups
-  var parentGroup: Group = _
-  var panel : JPanel = _
   val title = new JTextField()
   val titleLabel = new JLabel("Title:")
   val description = new JTextField()
@@ -37,11 +35,6 @@ class ThreadForm extends JPanel(new MigLayout()) {
   this += buttonPanel -> "dock south"
 
   addGroupButton.onClick((e) => {
-    println(parentGroup)
-    parentGroup.threads += Thread(title.getText, ArrayBuffer.empty)
-    panel += ThreadCard(title.getText, "John Smith", 0)
-    panel.repaint()
-    panel.revalidate()
-    panel.validate()
+    threadModel += RThread(title.getText, ArrayBuffer.empty)
   })
 }

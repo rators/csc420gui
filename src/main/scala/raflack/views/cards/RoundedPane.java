@@ -35,7 +35,7 @@ public class RoundedPane extends JPanel {
         int height = getHeight() - 1;
 
         Graphics2D g2d = (Graphics2D) g.create();
-        TestDropShadowBorder.applyQualityProperties(g2d);
+        DropShadowBorder.applyQualityProperties(g2d);
         Insets insets = getInsets();
         Rectangle bounds = getBounds();
         bounds.x = insets.left;
@@ -49,14 +49,14 @@ public class RoundedPane extends JPanel {
          * * THIS SHOULD BE CACHED AND ONLY UPDATED WHEN THE SIZE OF THE
          * COMPONENT CHANGES **
          */
-        BufferedImage img = TestDropShadowBorder.createCompatibleImage(bounds.width, bounds.height);
+        BufferedImage img = DropShadowBorder.createCompatibleImage(bounds.width, bounds.height);
         Graphics2D tg2d = img.createGraphics();
-        TestDropShadowBorder.applyQualityProperties(g2d);
+        DropShadowBorder.applyQualityProperties(g2d);
         tg2d.setColor(Color.BLACK);
         tg2d.translate(-bounds.x, -bounds.y);
         tg2d.fill(shape);
         tg2d.dispose();
-        BufferedImage shadow = TestDropShadowBorder.generateShadow(img, shadowSize, Color.BLACK, 0.5f);
+        BufferedImage shadow = DropShadowBorder.generateShadow(img, shadowSize, Color.BLACK, 0.5f);
 
         g2d.drawImage(shadow, shadowSize, shadowSize, this);
 

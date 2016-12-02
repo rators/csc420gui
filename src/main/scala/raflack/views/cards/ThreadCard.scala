@@ -18,5 +18,4 @@ class ThreadCard(title: String, poster: String, count: Int) extends RoundedPane(
 
 object ThreadCard {
   def apply(title: String, poster: String, count: Int) = new ThreadCard(title, poster, count)
-
 }

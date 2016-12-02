@@ -9,8 +9,8 @@ import scala.collection.mutable.ArrayBuffer
 
 case class Comment(name: String, text: String)
 
-case class Thread(name: String, comments: ArrayBuffer[Comment])
+case class RThread(name: String, comments: ArrayBuffer[Comment])
 
-case class Group(_id: Int, title: String, description: String, threads: ArrayBuffer[Thread]){
+case class Group(_id: Int, title: String, description: String, threads: ArrayBuffer[RThread]){
   def toMongo = MongoDBObject(this.toJson.toString)
 }

@@ -1,21 +1,18 @@
 package raflack
 
 import java.awt.{CardLayout, Dimension}
-import java.awt.event.{MouseEvent, MouseListener}
-import java.io.File
-import javax.imageio.ImageIO
 import javax.swing._
 
 import flagapp.conversions.SwingImpl._
 import net.miginfocom.swing.MigLayout
-import raflack.forms.{GroupForm, ThreadForm}
-import raflack.sections.{GroupPanel, ThreadPanel, UserMenu}
-import raflack.views.cards.GroupCard
+import raflack.forms.{GroupForm, ThreadLandingForm}
+import raflack.model.{GroupsModel, ThreadsLandingModel}
+import raflack.sections.{GroupPanel, ThreadLandingPanel, UserMenu}
 
 import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Success
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object RaflackView extends App {
   val db = new RaflackDB()
@@ -38,45 +35,41 @@ object RaflackView extends App {
 
 
     val contextPanel = new JPanel(new CardLayout())
-    val dbRoot = db.getRoot
+    def dbRoot = db.getRoot
     val root = dbRoot.head
-    root.threads += Thread("Who is going to win this election?", ArrayBuffer.empty)
-    val threadForm = new ThreadForm()
-    val threadCardPanel = new ThreadPanel(root, root.threads.toList, threadForm)
-    threadCardPanel += threadForm -> "dock east"
+    root.threads += RThread("Who is going to win this election?", ArrayBuffer.empty)
 
-    val groupCardPanel = new GroupPanel(dbRoot, (title) => {
-      println(title)
-      println(dbRoot.find(_.title.equals(title)))
-      threadCardPanel.show(dbRoot.find(_.title.equals(title)).get)
+    val threadsList = root.threads
+    val threadsModel: ThreadsLandingModel = new ThreadsLandingModel(None, threadsList)
+
+    val threadForm = new ThreadLandingForm(threadsModel)
+    val groupFormPanel = new GroupForm()
+
+    val threadCardPanel = new ThreadLandingPanel(threadsModel, threadForm)
+    threadCardPanel += threadForm -> "dock east"
+    threadsModel <~ threadCardPanel
+
+    val groupsModel = new GroupsModel(dbRoot)
+
+    val groupCardPanel = new GroupPanel(groupsModel, threadsModel, groupFormPanel, (title) => {
       val item: String = "thread"
       val cl = contextPanel.getLayout.asInstanceOf[CardLayout]
-      println(item)
       cl.show(contextPanel, item)
-      frame.revalidate()
-      contextPanel.validate()
-      frame.repaint()
-      contextPanel.repaint()
-      contextPanel.revalidate()
     })
+
+    groupsModel <~ groupCardPanel
 
     contextPanel.add("group", groupCardPanel)
     contextPanel.add("thread", threadCardPanel)
 
-    val groupFormPanel = new GroupForm()
     groupFormPanel.onSubmit((title, description) => {
       println(s"The title is $title, the description is $description")
-      val g = Future {
-        db.addGroup(title, description)
-      }
-      g.onComplete {
-        case Success(group) =>
-          SwingUtilities.invokeLater(new Runnable {
-            override def run(): Unit = {}
 
-            groupCardPanel += GroupCard(group.title, group.description, group.threads.length)
-            frame.revalidate()
-          })
+      Future {
+        db.addGroup(title, description)
+      }.onComplete {
+        case Success(group) =>
+          SwingUtilities.invokeLater(new Runnable{def run() = groupsModel += group})
         case _ => ???
       }
     })
@@ -101,7 +94,7 @@ object RaflackView extends App {
     mainPanel += contextPanel
     mainPanel += mainPanelTitle -> "dock north"
     mainPanel += pane -> "dock west"
-    groupCardPanel += groupFormPanel -> "dock east"
+
     mainPanel.setPreferredSize(1920, 1080)
 
     frame += mainPanel

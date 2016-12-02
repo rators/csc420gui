@@ -27,6 +27,8 @@ object SwingImpl {
     def +=(c: Component) = p.add(c)
 
     def +=(c: (Component, String)) = p.add(c._1, c._2)
+
+    def -=(c: Component) = p.remove(c)
   }
 
   implicit class ScalaButton(b: JButton) {

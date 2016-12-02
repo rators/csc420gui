@@ -16,6 +16,7 @@ class GroupForm extends JPanel(new MigLayout()) {
 
   title.setPreferredSize(200, 30)
   description.setPreferredSize(300, 30)
+  description.setEnabled(true)
   this += formTitle -> "dock north"
   this += titleLabel -> "cell 0 0"
   this += title -> "cell 1 0"
